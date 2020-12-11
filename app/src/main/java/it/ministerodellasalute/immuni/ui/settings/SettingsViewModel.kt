@@ -24,13 +24,15 @@ import it.ministerodellasalute.immuni.extensions.nearby.ExposureNotificationClie
 import it.ministerodellasalute.immuni.extensions.utils.ExternalLinksHelper
 import it.ministerodellasalute.immuni.logic.settings.ConfigurationSettingsManager
 import it.ministerodellasalute.immuni.logic.settings.models.FetchFaqsResult
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import org.koin.core.KoinComponent
 
 class SettingsViewModel(
-    private val settingsManager: ConfigurationSettingsManager
+    private val settingsManager: ConfigurationSettingsManager,
+    val gamesHelper: GooglePlayGamesHelper
 ) : ViewModel(), KoinComponent {
 
     companion object {
@@ -66,6 +68,13 @@ class SettingsViewModel(
         } else {
             navigateToFaqs.value = Event(true)
         }
+    }
+
+    fun googleSignIn(fragment: Fragment) {
+       if(gamesHelper.isSignedIn.value!!) 
+           gamesHelper.signOut()
+       else
+           gamesHelper.signIn(fragment, GooglePlayGamesHelper.RC_SIGN_IN)
     }
 
     fun openExposureSettings(fragment: SettingsFragment) {

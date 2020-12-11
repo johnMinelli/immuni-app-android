@@ -22,13 +22,15 @@ import it.ministerodellasalute.immuni.extensions.lifecycle.AppLifecycleObserver
 import it.ministerodellasalute.immuni.extensions.notifications.PushNotificationManager
 import it.ministerodellasalute.immuni.logic.exposure.ExposureManager
 import it.ministerodellasalute.immuni.ui.home.*
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import kotlinx.coroutines.flow.*
 
 class MainViewModel(
-    private val context: Context,
-    private val pushNotificationManager: PushNotificationManager,
-    private val exposureManager: ExposureManager,
-    appLifecycleObserver: AppLifecycleObserver
+        private val context: Context,
+        private val pushNotificationManager: PushNotificationManager,
+        private val exposureManager: ExposureManager,
+        val gamesHelper: GooglePlayGamesHelper,
+        appLifecycleObserver: AppLifecycleObserver
 ) : ViewModel() {
 
     val homeListModel = MutableLiveData<List<HomeItemType>>(listOf())
@@ -38,9 +40,10 @@ class MainViewModel(
         combine(
             exposureManager.isBroadcastingActive,
             exposureManager.exposureStatus,
+            gamesHelper.isSignedIn.asFlow(),
             appLifecycleObserver.isActive.filter { it }
-        ) { broadcastingIsActive, status, isActive ->
-            Triple(broadcastingIsActive, status, isActive)
+        ) { broadcastingIsActive, status, isSigned, isActive ->
+            Triple(broadcastingIsActive, isSigned, isActive)
         }.onEach { (broadcastingIsActive, _, _) ->
             val protectionActive = when (broadcastingIsActive) {
                 null -> null
@@ -55,6 +58,8 @@ class MainViewModel(
         protectionActive?.let {
             items.add(ProtectionCard(it, exposureManager.exposureStatus.value))
         }
+        if(gamesHelper.isSignedIn.value == true)
+            items.add(LevelIndicatorItem)
         items.add(SectionHeader(context.getString(R.string.home_view_info_header_title)))
         items.add(HowItWorksCard)
         items.add(SelfCareCard)

@@ -18,6 +18,7 @@
   <string name="accessibility_close">Close</string>
   <string name="accessibility_app_name">Immuni</string>
   <string name="tabbar_title_home">Home</string>
+  <string name="tabbar_achievements_home" translatable="false">Medals</string>
   <string name="tabbar_title_settings">Settings</string>
   <string name="notifications_update_os_title">The service isn\'t activated yet</string>
   <string name="notifications_update_os_description">Open the app to finish activating it.</string>
@@ -94,6 +95,7 @@
   <string name="home_view_service_not_active_title">Service <b>inactive</b></string>
   <string name="home_view_service_not_active_subtitle">Take action now to allow Immuni to work properly.</string>
   <string name="home_view_service_not_active_button">Reactivate Immuni</string>
+  <string name="home_view_level_header_title" translatable="false">Level</string>
   <string name="home_view_info_protection_title">What you can do to protect yourself</string>
   <string name="home_view_info_app_title">How does the app work?</string>
   <string name="home_view_info_button_title">Find out more</string>
@@ -123,6 +125,8 @@
   <string name="settings_setting_privacy">Privacy notice</string>
   <string name="settings_setting_chage_province">Change your province</string>
   <string name="settings_setting_leave_review">Leave a review</string>
+  <string name="settings_setting_sign_in" translatable="false">Sign in</string>
+  <string name="settings_setting_sign_out" translatable="false">Sign out</string>
   <string name="settings_setting_contact_support">Contact Support</string>
   <string name="settings_setting_debug_utilities">Debug menu</string>
   <string name="settings_update_province_update_province">Update</string>

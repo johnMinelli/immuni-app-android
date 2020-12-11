@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.DiffUtil
@@ -30,12 +31,14 @@ import it.ministerodellasalute.immuni.extensions.utils.color
 import it.ministerodellasalute.immuni.extensions.view.*
 import it.ministerodellasalute.immuni.logic.exposure.models.ExposureStatus
 import it.ministerodellasalute.immuni.logic.settings.ConfigurationSettingsManager
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import kotlin.reflect.full.primaryConstructor
 
 class HomeListAdapter(
     val context: Context,
     private val clickListener: HomeClickListener,
-    val settingsManager: ConfigurationSettingsManager
+    val settingsManager: ConfigurationSettingsManager,
+    private val gamesHelper: GooglePlayGamesHelper
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -79,6 +82,12 @@ class HomeListAdapter(
         val title: TextView = v.findViewById(R.id.header)
     }
 
+    inner class LevelIndicatorVH(v: View) : RecyclerView.ViewHolder(v) {
+        val title: TextView = v.findViewById(R.id.level_indicator_title)
+        val subtitle: TextView = v.findViewById(R.id.level_indicator_subtitle)
+        val progress: ProgressBar = v.findViewById(R.id.level_indicator_progressBar)
+    }
+
     inner class InformationHowAppWorksVH(v: View) : RecyclerView.ViewHolder(v) {
         val container: ViewGroup = v.findViewById(R.id.container)
     }
@@ -109,10 +118,11 @@ class HomeListAdapter(
         val (layout, cardType) = when (viewType) {
             0 -> Pair(R.layout.home_protection_state_card, ProtectionCardVH::class)
             1 -> Pair(R.layout.home_section_header_item, SectionHeaderVH::class)
-            2 -> Pair(R.layout.home_information_how_app_works_card, InformationHowAppWorksVH::class)
-            3 -> Pair(R.layout.home_information_self_care_card, InformationSelfCareVH::class)
-            4 -> Pair(R.layout.home_countries_of_interest, CountriesOfInterestVH::class)
-            5 -> Pair(R.layout.home_disable_exposure_api, DisableExposureApiVH::class)
+            2 -> Pair(R.layout.home_level_indicator_item, LevelIndicatorVH::class)
+            3 -> Pair(R.layout.home_information_how_app_works_card, InformationHowAppWorksVH::class)
+            4 -> Pair(R.layout.home_information_self_care_card, InformationSelfCareVH::class)
+            5 -> Pair(R.layout.home_countries_of_interest_card, CountriesOfInterestVH::class)
+            6 -> Pair(R.layout.home_disable_exposure_api, DisableExposureApiVH::class)
             else -> error("Unhandled viewType $viewType")
         }
 
@@ -138,6 +148,15 @@ class HomeListAdapter(
             is InformationHowAppWorksVH -> {
                 val item = items[position] as HowItWorksCard
                 holder.container.clipToOutline = true
+            }
+            is LevelIndicatorVH -> {
+                if(gamesHelper.player != null) {
+                    val playerLevel = gamesHelper.player!!.levelInfo
+                    holder.title.text = "Level " + playerLevel.currentLevel.levelNumber
+                    holder.subtitle.text = "Points " + playerLevel.currentXpTotal
+                    holder.progress.max = (playerLevel.currentLevel.maxXp - playerLevel.currentLevel.minXp).toInt()
+                    holder.progress.progress = (playerLevel.currentXpTotal - playerLevel.currentLevel.minXp).toInt()
+                }
             }
             is ProtectionCardVH -> {
                 val item = items[position] as ProtectionCard
@@ -197,10 +216,11 @@ class HomeListAdapter(
         return when (items[position]) {
             is ProtectionCard -> 0
             is SectionHeader -> 1
-            is HowItWorksCard -> 2
-            is SelfCareCard -> 3
-            is CountriesOfInterestCard -> 4
-            is DisableExposureApi -> 5
+            is LevelIndicatorItem -> 2
+            is HowItWorksCard -> 3
+            is SelfCareCard -> 4
+            is CountriesOfInterestCard -> 5
+            is DisableExposureApi -> 6
         }
     }
 

@@ -16,30 +16,29 @@
 package it.ministerodellasalute.immuni.ui.main
 
 import android.os.Bundle
-import androidx.core.view.iterator
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.ministerodellasalute.immuni.R
 import it.ministerodellasalute.immuni.ui.ImmuniActivity
 import it.ministerodellasalute.immuni.ui.main.navigation.setupWithNavController
-import kotlinx.android.synthetic.main.home_activity.*
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+
 
 class MainActivity : ImmuniActivity() {
 
+    private val gamesHelper: GooglePlayGamesHelper by inject()
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var viewModel: MainViewModel
 
+    // Client used to sign in with Go
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
         viewModel = getViewModel()
-
-        bottom_nav.itemIconTintList = null
-
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
@@ -59,40 +58,33 @@ class MainActivity : ImmuniActivity() {
     private fun setupBottomNavigationBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
 
-        val navGraphIds = listOf(R.navigation.home, R.navigation.settings)
-        val menuItemsIds = listOf(R.id.home_nav, R.id.settings_nav)
-        val defaultIconsIds =
-            listOf(R.drawable.ic_home_unselected, R.drawable.ic_settings_unselected)
-        val selectedIconsIds = listOf(R.drawable.ic_home_selected, R.drawable.ic_settings_selected)
+        val navGraphIds = listOf(R.navigation.home, R.navigation.home, R.navigation.settings)
 
+        val clickListenerEx = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            if(item.itemId == R.id.achievements){
+                gamesHelper.startAchievementsIntent(this, GooglePlayGamesHelper.RC_UNUSED)
+            }
+            true
+        }
+        
         // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(
+        bottomNavigationView.setupWithNavController(
             navGraphIds = navGraphIds,
-            menuItemsIds = menuItemsIds,
-            defaultIconsIds = defaultIconsIds,
-            selectedIconsIds = selectedIconsIds,
             fragmentManager = supportFragmentManager,
+            clickListenerEx = clickListenerEx,
             containerId = R.id.nav_host_container,
             intent = intent
         )
-
-        // Whenever the selected controller changes, setup the action bar.
-        controller.observe(this, Observer { navController ->
-            // setupActionBarWithNavController(navController)
-        })
-        currentNavController = controller
-
-        // update icons
-        bottom_nav.menu.iterator().forEach {
-            if (it.isChecked) {
-                it.setIcon(selectedIconsIds[menuItemsIds.indexOf(it.itemId)])
-            } else {
-                it.setIcon(defaultIconsIds[menuItemsIds.indexOf(it.itemId)])
-            }
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false
     }
+
+//    override fun onResume() {
+//        gamesHelper.unlock(R.string.achievement_one_step_at_a_time.toString()) 
+//        gamesHelper.increment(achievement = getString(R.string.achievement_what_a_month), increment = 1)
+//        gamesHelper.increment(event = getString(R.string.event_app_opened), increment = 1)
+//        super.onResume()
+//    }
 }

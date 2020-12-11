@@ -16,9 +16,7 @@
 package it.ministerodellasalute.immuni.ui.home
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -36,7 +34,9 @@ import it.ministerodellasalute.immuni.extensions.view.visible
 import it.ministerodellasalute.immuni.logic.exposure.models.ExposureStatus
 import it.ministerodellasalute.immuni.logic.settings.ConfigurationSettingsManager
 import it.ministerodellasalute.immuni.ui.main.MainViewModel
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.home_level_indicator_item.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
 
@@ -78,7 +78,8 @@ class HomeFragment : Fragment(),
             adapter = HomeListAdapter(
                 requireContext(),
                 this@HomeFragment,
-                settingsManager
+                settingsManager,
+                viewModel.gamesHelper
             )
         }
 
@@ -230,6 +231,9 @@ class HomeFragment : Fragment(),
                     findNavController().navigate(action)
                 }
             }
+            LevelIndicatorItem -> {
+                openLeaderboards()
+            }
             is SectionHeader -> {
             }
             HowItWorksCard -> {
@@ -257,6 +261,10 @@ class HomeFragment : Fragment(),
         val action =
             HomeFragmentDirections.actionOnboardingActivity(false)
         findNavController().navigate(action)
+    }
+
+    private fun openLeaderboards() {
+        viewModel.gamesHelper.startLeaderboardIntent(this, R.string.leaderboard_score_rank.toString(), GooglePlayGamesHelper.RC_UNUSED)
     }
 
     private fun openHowItWorks() {

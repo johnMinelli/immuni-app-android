@@ -32,6 +32,8 @@ data class SectionHeader(
     val title: String
 ) : HomeItemType()
 
+object LevelIndicatorItem : HomeItemType()
+
 sealed class InformationCard : HomeItemType()
 
 object HowItWorksCard : InformationCard()

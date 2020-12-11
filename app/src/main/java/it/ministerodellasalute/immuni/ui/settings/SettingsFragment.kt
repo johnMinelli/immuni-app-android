@@ -17,8 +17,11 @@ package it.ministerodellasalute.immuni.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -26,6 +29,7 @@ import com.google.android.material.appbar.AppBarLayout
 import it.ministerodellasalute.immuni.BuildConfig
 import it.ministerodellasalute.immuni.R
 import it.ministerodellasalute.immuni.SettingsNavDirections
+import it.ministerodellasalute.immuni.databinding.SettingsFragmentBinding
 import it.ministerodellasalute.immuni.extensions.activity.loading
 import it.ministerodellasalute.immuni.extensions.activity.setLightStatusBar
 import it.ministerodellasalute.immuni.extensions.playstore.PlayStoreActions
@@ -33,22 +37,31 @@ import it.ministerodellasalute.immuni.extensions.utils.ExternalLinksHelper
 import it.ministerodellasalute.immuni.extensions.view.setSafeOnClickListener
 import it.ministerodellasalute.immuni.ui.dialog.ConfirmationDialogListener
 import it.ministerodellasalute.immuni.ui.dialog.openConfirmationDialog
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import it.ministerodellasalute.immuni.util.ProgressDialogFragment
 import kotlin.math.abs
 import kotlinx.android.synthetic.main.settings_fragment.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SettingsFragment : Fragment(R.layout.settings_fragment), ConfirmationDialogListener {
 
     private lateinit var viewModel: SettingsViewModel
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private lateinit var binding: SettingsFragmentBinding
+    private val gamesHelper : GooglePlayGamesHelper by inject()
+    
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        //data binding for fun
+        binding = DataBindingUtil.inflate(inflater, R.layout.settings_fragment, container, false)
         viewModel = getViewModel()
+        binding.dataSettingsViewModel = viewModel
+        binding.setLifecycleOwner(this)
+        
         (activity as? AppCompatActivity)?.setLightStatusBar(resources.getColor(R.color.background_darker))
-
+        
+        //to fully implement MVVM get rid of this (view > viewmodel) (viewmodel < UI Component)
         // Fade out toolbar on scroll
-        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val ratio = abs(verticalOffset / appBarLayout.totalScrollRange.toFloat())
 
             pageTitle?.alpha = 1 - ratio
@@ -58,44 +71,47 @@ class SettingsFragment : Fragment(R.layout.settings_fragment), ConfirmationDialo
 
         // data management
 
-        dataLoadButton.setSafeOnClickListener {
+        binding.dataLoadButton.setSafeOnClickListener {
             val action = SettingsNavDirections.actionUploadData()
             findNavController().navigate(action)
         }
 
         // information
 
-        faqButton.setSafeOnClickListener {
+        binding.faqButton.setSafeOnClickListener {
             viewModel.onFaqClick()
         }
-        termsOfServiceButton.setSafeOnClickListener {
+        binding.termsOfServiceButton.setSafeOnClickListener {
             viewModel.onTouClick(this)
         }
-        privacyPolicyButton.setSafeOnClickListener {
+        binding.privacyPolicyButton.setSafeOnClickListener {
             // viewModel.onPrivacyPolicyClick(this)
             val action = SettingsFragmentDirections.actionPrivacy()
             findNavController().navigate(action)
         }
 
         // general
+        binding.googleSignIn.setSafeOnClickListener {
+            viewModel.googleSignIn(this)
+        }
 
-        chooseCountriesOfInterestButton.setSafeOnClickListener {
+        binding.chooseCountriesOfInterestButton.setSafeOnClickListener {
             val action = SettingsFragmentDirections.actionCountriesOfInterest()
             findNavController().navigate(action)
         }
 
-        changeProvinceButton.setSafeOnClickListener {
+        binding.changeProvinceButton.setSafeOnClickListener {
             val action = SettingsNavDirections.actionOnboardingActivity(true)
             findNavController().navigate(action)
         }
-        sendFeedbackButton.setSafeOnClickListener {
+        binding.sendFeedbackButton.setSafeOnClickListener {
             PlayStoreActions.goToPlayStoreAppDetails(requireContext(), requireContext().packageName)
         }
-        contactSupport.setSafeOnClickListener {
+        binding.contactSupport.setSafeOnClickListener {
             val action = SettingsNavDirections.actionSupport()
             findNavController().navigate(action)
         }
-        shareApp.setSafeOnClickListener {
+        binding.shareApp.setSafeOnClickListener {
             ExternalLinksHelper.shareText(
                 requireContext(),
                 message = getString(R.string.settings_setting_share_message),
@@ -104,7 +120,7 @@ class SettingsFragment : Fragment(R.layout.settings_fragment), ConfirmationDialo
             )
         }
 
-        applicationVersion.text = getString(
+        binding.applicationVersion.text = getString(
             R.string.settings_app_version,
             BuildConfig.VERSION_NAME,
             BuildConfig.VERSION_CODE
@@ -131,6 +147,7 @@ class SettingsFragment : Fragment(R.layout.settings_fragment), ConfirmationDialo
         viewModel.loading.observe(viewLifecycleOwner, Observer {
             (activity as? AppCompatActivity)?.loading(it, ProgressDialogFragment())
         })
+        return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -138,6 +155,8 @@ class SettingsFragment : Fragment(R.layout.settings_fragment), ConfirmationDialo
         if (requestCode == SettingsViewModel.EXPOSURE_NOTIFICATION_SETTINGS_REQUEST) {
             // Nothing to do
         }
+        if(requestCode == GooglePlayGamesHelper.RC_A_SIGN_IN || requestCode == GooglePlayGamesHelper.RC_SIGN_IN )
+            gamesHelper.onActivityResult(resultCode, data)
     }
 
     override fun onDialogPositive(requestCode: Int) {}

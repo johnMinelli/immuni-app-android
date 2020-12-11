@@ -52,6 +52,9 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    dataBinding {
+        enabled true
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -127,6 +130,10 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 
+    // Google services
+    implementation "com.google.android.gms:play-services-games:21.0.0"
+    implementation "com.google.android.gms:play-services-auth:19.0.0"
+    
     // Koin
     implementation "org.koin:koin-android:$koinVersion"
     implementation "org.koin:koin-androidx-scope:$koinVersion"
@@ -137,16 +144,16 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "com.github.bumptech.glide:annotations:$glideVersion"
 
-    //Moshi
+    // Moshi
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
     implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
 
-    //Retrofit2
+    // Retrofit2
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
 
-    //Okhttp3
+    // Okhttp3
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
 

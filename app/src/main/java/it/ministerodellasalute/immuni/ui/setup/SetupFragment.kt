@@ -23,7 +23,6 @@ import androidx.lifecycle.Observer
 import it.ministerodellasalute.immuni.R
 import it.ministerodellasalute.immuni.extensions.view.invisible
 import it.ministerodellasalute.immuni.ui.main.MainActivity
-import it.ministerodellasalute.immuni.ui.welcome.WelcomeActivity
 import kotlinx.android.synthetic.main.setup_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -63,7 +62,7 @@ class SetupFragment : Fragment(R.layout.setup_fragment) {
 
     private fun navigateToDestination(destination: SetupViewModel.Destination) {
         val activityClass = when (destination) {
-            SetupViewModel.Destination.Welcome -> WelcomeActivity::class.java
+            SetupViewModel.Destination.Welcome -> MainActivity::class.java//dunno how to debug properly
             SetupViewModel.Destination.Home -> MainActivity::class.java
         }
         val intent = Intent(requireContext(), activityClass).apply {

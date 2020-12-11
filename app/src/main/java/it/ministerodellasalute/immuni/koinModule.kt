@@ -59,6 +59,7 @@ import it.ministerodellasalute.immuni.ui.suggestions.StateCloseViewModel
 import it.ministerodellasalute.immuni.ui.support.SupportViewModel
 import it.ministerodellasalute.immuni.ui.upload.UploadViewModel
 import it.ministerodellasalute.immuni.util.CoroutineContextProvider
+import it.ministerodellasalute.immuni.util.GooglePlayGamesHelper
 import it.ministerodellasalute.immuni.workers.models.ServiceNotActiveNotificationWorkerStatus
 import it.ministerodellasalute.immuni.workers.repositories.ServiceNotActiveNotificationWorkerRepository
 import java.security.SecureRandom
@@ -326,6 +327,10 @@ val appModule = module {
         CountriesOfInterestManager(get(), get())
     }
 
+    single {
+        GooglePlayGamesHelper(androidContext())
+    }
+
     factory {
         BaseOperationalInfo(get(), get(), get())
     }
@@ -336,6 +341,7 @@ val appModule = module {
     viewModel {
         MainViewModel(
             androidContext(),
+            get(),
             get(),
             get(),
             get()
@@ -350,7 +356,7 @@ val appModule = module {
     viewModel { UploadViewModel(get()) }
     viewModel { ForceUpdateViewModel(get()) }
     viewModel { FaqViewModel(get()) }
-    viewModel { SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get()) }
     viewModel { StateCloseViewModel(get(), get()) }
     viewModel { SupportViewModel(androidContext(), get(), get()) }
 }

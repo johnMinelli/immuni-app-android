@@ -1,32 +1,10 @@
-<!--
-  ~ Copyright (C) 2020 Presidenza del Consiglio dei Ministri.
-  ~ Please refer to the AUTHORS file for more information.
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
-  -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="40dp"
-    android:height="40dp"
-    android:viewportWidth="40"
-    android:viewportHeight="40">
-  <path
-      android:pathData="M20,19.5m-12.5,0a12.5,12.5 0,1 1,25 0a12.5,12.5 0,1 1,-25 0"
-      android:fillColor="#D5DEE8"/>
-  <path
-      android:pathData="M20,18.7187C20.8284,18.7187 21.5,19.3903 21.5,20.2188L21.5,23.4688C21.5,24.2972 20.8284,24.9687 20,24.9687C19.1716,24.9687 18.5,24.2972 18.5,23.4687L18.5,20.2187C18.5,19.3903 19.1716,18.7187 20,18.7187Z"
-      android:fillColor="#A7B8CC"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M20,14.1562C20.8284,14.1562 21.5,14.8278 21.5,15.6562C21.5,16.4847 20.8284,17.1562 20,17.1562C19.1716,17.1562 18.5,16.4847 18.5,15.6562C18.5,14.8278 19.1716,14.1562 20,14.1562Z"
-      android:fillColor="#A7B8CC"
-      android:fillType="evenOdd"/>
+        android:width="53.333332dp"
+        android:height="53.333332dp"
+        android:viewportWidth="53.333332"
+        android:viewportHeight="53.333332">
+    <path
+            android:pathData="M19.4427,40.8726c-1.1999,-0.6511 -1.5917,-1.4552 -1.5917,-3.2662 0,-1.1077 -0.2153,-1.7522 -0.829,-2.4815 -0.716,-0.8509 -1.109,-1.0055 -2.8836,-1.1338 -1.7252,-0.1248 -2.1802,-0.2946 -2.8377,-1.059 -1.2171,-1.4149 -1.0481,-2.8597 0.5503,-4.7065 1.8559,-2.1443 1.7841,-3.3312 -0.329,-5.4444 -1.3757,-1.3757 -1.3871,-3.0574 -0.0299,-4.4145 0.8402,-0.8402 1.2262,-0.9744 2.8037,-0.9744 1.6335,0 1.9217,-0.1098 2.6923,-1.0256 0.6479,-0.77 0.863,-1.3984 0.863,-2.5219 0,-1.8413 0.399,-2.6303 1.66,-3.2824 1.4849,-0.7679 2.1633,-0.6213 3.84,0.8299 2.0951,1.8133 3.2467,1.806 5.3726,-0.034 1.3818,-1.196 1.7267,-1.3434 2.7524,-1.177 1.7967,0.2916 2.8088,1.5091 2.8595,3.4397 0.0728,2.7767 1.0314,3.7713 3.6348,3.7713 3.4334,0 4.7301,3.1102 2.3808,5.7106 -1.5738,1.742 -1.6382,3.5815 -0.1733,4.9499 1.8885,1.7641 1.9929,3.7308 0.2748,5.1765 -0.7301,0.6144 -1.3743,0.8297 -2.4824,0.8297 -2.601,0 -3.5468,0.9835 -3.6178,3.7621 -0.0541,2.1153 -1.2295,3.3894 -3.1271,3.3894 -1.0239,0 -1.5782,-0.2582 -2.6676,-1.2424 -1.8993,-1.7159 -3.1442,-1.6941 -5.2066,0.0909 -1.6475,1.4259 -2.4662,1.5963 -3.9083,0.8137zM27.6273,30.2708c1.412,-0.59 2.808,-2.2673 3.076,-3.6957 0.3195,-1.7028 -0.1219,-3.097 -1.3782,-4.3533 -1.9743,-1.9743 -4.9739,-1.9743 -6.9482,0 -1.8716,1.8716 -1.9843,4.5116 -0.2792,6.538 1.5315,1.8201 3.5014,2.3584 5.5295,1.511z"
+            android:strokeWidth="0.333333"
+            android:fillColor="#A7B8CC" />
 </vector>

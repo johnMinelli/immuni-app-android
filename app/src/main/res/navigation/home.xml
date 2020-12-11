@@ -28,6 +28,11 @@
         android:name="it.ministerodellasalute.immuni.ui.home.HomeFragment"
         android:label="homeFragment"
         tools:layout="@layout/home_fragment" />
+    <fragment
+        android:id="@+id/achievementsFragment"
+        android:name="it.ministerodellasalute.immuni.ui.home.HomeFragment"
+        android:label="homeFragment"
+        tools:layout="@layout/home_fragment" />
     <dialog
         android:id="@+id/howItWorksDialogFragment"
         android:name="it.ministerodellasalute.immuni.ui.howitworks.HowItWorksDialogFragment"

@@ -19,7 +19,6 @@ import android.content.Intent
 import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.set
-import androidx.core.view.iterator
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,9 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 fun BottomNavigationView.setupWithNavController(
     navGraphIds: List<Int>,
-    menuItemsIds: List<Int>,
-    defaultIconsIds: List<Int>,
-    selectedIconsIds: List<Int>,
+    clickListenerEx: BottomNavigationView.OnNavigationItemSelectedListener?,
     fragmentManager: FragmentManager,
     containerId: Int,
     intent: Intent
@@ -88,24 +85,12 @@ fun BottomNavigationView.setupWithNavController(
 
     // When a navigation item is selected
     setOnNavigationItemSelectedListener { item ->
-
-        this.menu.iterator().forEach { it ->
-            it.setIcon(defaultIconsIds[menuItemsIds.indexOf(it.itemId)])
-        }
-
-        item.setIcon(selectedIconsIds[menuItemsIds.indexOf(item.itemId)])
-
-        // notify the current visible fragment it is going to be hidden
-        val navHostFragment = fragmentManager.primaryNavigationFragment as? NavHostFragment
-        val visibleFragment = navHostFragment?.childFragmentManager?.primaryNavigationFragment as? TabFragment
-        visibleFragment?.onChangingTab()
-
         // Don't do anything if the state is state has already been saved.
         if (fragmentManager.isStateSaved) {
             false
         } else {
             val newlySelectedItemTag = graphIdToTagMap[item.itemId]
-            if (selectedItemTag != newlySelectedItemTag) {
+            if (newlySelectedItemTag != null && selectedItemTag != newlySelectedItemTag) {
                 // Pop everything above the first fragment (the "fixed start destination")
                 fragmentManager.popBackStack(firstFragmentTag,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -117,13 +102,6 @@ fun BottomNavigationView.setupWithNavController(
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
                     fragmentManager.beginTransaction()
-                        /*
-                        .setCustomAnimations(
-                            R.anim.nav_default_enter_anim,
-                            R.anim.nav_default_exit_anim,
-                            R.anim.nav_default_pop_enter_anim,
-                            R.anim.nav_default_pop_exit_anim)
-                        */
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
@@ -143,13 +121,14 @@ fun BottomNavigationView.setupWithNavController(
                 selectedNavController.value = selectedFragment.navController
                 true
             } else {
+                clickListenerEx?.onNavigationItemSelected(item)
                 false
             }
         }
     }
 
     // Optional: on item reselected, pop back stack to the destination of the graph
-    setupItemReselected(menuItemsIds, defaultIconsIds, selectedIconsIds, graphIdToTagMap, fragmentManager)
+    setupItemReselected(graphIdToTagMap, fragmentManager)
 
     // Handle deep link
     setupDeepLinks(navGraphIds, fragmentManager, containerId, intent)
@@ -196,20 +175,10 @@ private fun BottomNavigationView.setupDeepLinks(
 }
 
 private fun BottomNavigationView.setupItemReselected(
-    menuItemsIds: List<Int>,
-    defaultIconsIds: List<Int>,
-    selectedIconsIds: List<Int>,
     graphIdToTagMap: SparseArray<String>,
     fragmentManager: FragmentManager
 ) {
     setOnNavigationItemReselectedListener { item ->
-
-        this.menu.iterator().forEach { it ->
-            it.setIcon(defaultIconsIds[menuItemsIds.indexOf(it.itemId)])
-        }
-
-        item.setIcon(selectedIconsIds[menuItemsIds.indexOf(item.itemId)])
-
         val newlySelectedItemTag = graphIdToTagMap[item.itemId]
         val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
             as NavHostFragment
